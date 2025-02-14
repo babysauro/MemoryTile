@@ -8,7 +8,7 @@ class TileData: ObservableObject {
     
     private let tileImages = [
         "note1", "note2", "note3", "note4", "note5",
-        "note6", "note7", "violin"
+        "note6", "note7", "violin", "piano", "guitar", "drum", "flaute"
     ]
     
     // Layout configuration
@@ -22,7 +22,7 @@ class TileData: ObservableObject {
         
         // Create pairs of tiles
         for image in tileImages {
-            for _ in 0...2 {
+            for _ in 0...1 {
                 let tile = Tile(
                     frontImage: image,
                     backImage: "backImage",
@@ -98,14 +98,14 @@ class TileData: ObservableObject {
 
         // Match only based on frontImage, no position check
         if tile1.frontImage == tile2.frontImage {
-            // Match found: le tessere sono uguali
+            // Match found
             for tile in selectedTiles {
                 if let index = tiles.firstIndex(of: tile) {
                     tiles[index].isMatched = true
                     tiles[index].isSelected = false
                 }
             }
-            score += 10  // Punteggio aumentato per il match
+            score += 10
         } else {
             // Nessun match
             for tile in selectedTiles {
@@ -114,7 +114,7 @@ class TileData: ObservableObject {
                 }
             }
         }
-        selectedTiles.removeAll()  // Deseleziona entrambe le tessere
+        selectedTiles.removeAll()
     }
     
     func isGameComplete() -> Bool {

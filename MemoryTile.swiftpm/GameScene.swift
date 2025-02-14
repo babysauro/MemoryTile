@@ -7,12 +7,12 @@ class GameScene: SKScene {
     private var lastMatchedTiles: Set<UUID> = []
     private var resetButton: SKSpriteNode!
     
-    private let tileSize = CGSize(width: 120, height: 140)
-    private let tileOffset = CGPoint(x: 130, y: 150)
+    private let tileSize = CGSize(width: 100, height: 120)
+    private let tileOffset = CGPoint(x: 110, y: 130)
     private let gridSize = 6
     
     override func didMove(to view: SKView) {
-        backgroundColor = .black
+        backgroundColor = UIColor(named: "AccentColor") ?? .black
         
         setupResetButton()
         
@@ -22,9 +22,9 @@ class GameScene: SKScene {
     }
     
     private func setupResetButton() {
-            resetButton = SKSpriteNode(imageNamed: "reset_button")
+            resetButton = SKSpriteNode(imageNamed: "restart")
             resetButton.size = CGSize(width: 60, height: 60)
-            resetButton.position = CGPoint(x: size.width / 2, y: 40)
+            resetButton.position = CGPoint(x: size.width / 2, y: 100)
             resetButton.zPosition = 100
             addChild(resetButton)
         }
@@ -39,7 +39,7 @@ class GameScene: SKScene {
             let gridWidth = CGFloat(gridSize - 1) * tileOffset.x
             let gridHeight = CGFloat(gridSize - 1) * tileOffset.y
             let startX = centerX - (gridWidth / 2)
-            let startY = centerY - (gridHeight / 2) + tileSize.height
+            let startY = centerY - (gridHeight / 2) + tileSize.height - 100
             
             for tile in tileData.tiles {
                 createTileNode(for: tile, startX: startX, startY: startY)
@@ -55,8 +55,14 @@ class GameScene: SKScene {
     
     private func createTileNode(for tile: Tile, startX: CGFloat, startY: CGFloat) {
         let texture = SKTexture(imageNamed: tile.isMatched ? "backImage" : tile.frontImage)
-        let node = SKSpriteNode(texture: texture, size: tileSize)
         
+        if let existingNode = tileNodes[tile.id] {
+            existingNode.texture = texture  // Aggiorna la texture esistente
+            existingNode.alpha = tile.isMatched ? 0.5 : 1.0
+            return
+        }
+        
+        let node = SKSpriteNode(texture: texture, size: tileSize)
         let x = startX + (CGFloat(tile.position.x) * tileOffset.x)
         let y = startY + (CGFloat(tile.position.y) * tileOffset.y)
         let z = CGFloat(tile.position.z) * 0.1

@@ -21,12 +21,12 @@ struct ContentView: View {
             VStack {
                 Text("Memory Tile")
                     .font(.largeTitle)
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                     .padding()
                 
                 Text("Score: \(tileData.score)")
-                    .font(.title2)
-                    .foregroundColor(.white)
+                    .font(.title)
+                    .foregroundColor(.black)
                     .padding()
                 
                 Spacer()
