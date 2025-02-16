@@ -16,32 +16,8 @@ struct Tile: Identifiable, Equatable {
         
         
         func isAccessible(in tiles: [Tile]) -> Bool {
-            // Controlla se c'è una tessera sopra
-            let hasTileAbove = tiles.contains { tile in
-                tile.position.x == x &&
-                tile.position.y == y &&
-                tile.position.z == z + 1
-            }
-            
-            // Controlla se entrambi i lati sono bloccati
-            let hasLeftTile = tiles.contains { tile in
-                tile.position.x == x - 1 &&
-                tile.position.y == y &&
-                tile.position.z == z &&
-                !tile.isMatched
-            }
-            
-            let hasRightTile = tiles.contains { tile in
-                tile.position.x == x + 1 &&
-                tile.position.y == y &&
-                tile.position.z == z &&
-                !tile.isMatched
-            }
-            
-            // Una tessera è accessibile se:
-            // 1. Non ha tessere sopra E
-            // 2. Ha almeno un lato libero
-            return !hasTileAbove && !(hasLeftTile && hasRightTile)
+
+            return true
         }
     }
     

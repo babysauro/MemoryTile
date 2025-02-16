@@ -20,7 +20,7 @@ struct ContentView: View {
             
             VStack {
                 Text("Memory Tile")
-                    .font(.largeTitle)
+                    .font(.system(size: 50, weight: .bold, design: .default))
                     .foregroundColor(.black)
                     .padding()
                 
