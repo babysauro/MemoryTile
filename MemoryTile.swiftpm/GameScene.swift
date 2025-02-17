@@ -57,7 +57,7 @@ class GameScene: SKScene {
         let texture = SKTexture(imageNamed: tile.isMatched ? "backImage" : tile.frontImage)
         
         if let existingNode = tileNodes[tile.id] {
-            existingNode.texture = texture  // Aggiorna la texture esistente
+            existingNode.texture = texture  // Update exsisting texture
             existingNode.alpha = tile.isMatched ? 0.5 : 1.0
             return
         }

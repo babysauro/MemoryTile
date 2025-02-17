@@ -107,7 +107,7 @@ class TileData: ObservableObject {
             }
             score += 10
         } else {
-            // Nessun match
+            // No match
             for tile in selectedTiles {
                 if let index = tiles.firstIndex(of: tile) {
                     tiles[index].isSelected = false
