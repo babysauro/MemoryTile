@@ -13,7 +13,8 @@ class GameScene: SKScene {
     
     override func didMove(to view: SKView) {
         backgroundColor = UIColor(named: "AccentColor") ?? .black
-        
+        // Sound
+        //AudioManager.shared.playBackgroundMusic(filename: "backgroundMusic.mp3")
         setupResetButton()
         
         let centerX = size.width / 2
@@ -22,36 +23,36 @@ class GameScene: SKScene {
     }
     
     private func setupResetButton() {
-            resetButton = SKSpriteNode(imageNamed: "restart")
-            resetButton.size = CGSize(width: 60, height: 60)
-            resetButton.position = CGPoint(x: size.width / 2, y: 100)
-            resetButton.zPosition = 100
-            addChild(resetButton)
-        }
+        resetButton = SKSpriteNode(imageNamed: "restart")
+        resetButton.size = CGSize(width: 60, height: 60)
+        resetButton.position = CGPoint(x: size.width / 2, y: 100)
+        resetButton.zPosition = 100
+        addChild(resetButton)
+    }
     
     private func setupGame(centerX: CGFloat, centerY: CGFloat) {
-            removeAllChildren()
-            tileNodes.removeAll()
-            setupResetButton()
+        removeAllChildren()
+        tileNodes.removeAll()
+        setupResetButton()
+        
+        guard let tileData = tileData else { return }
+        
+        let gridWidth = CGFloat(gridSize - 1) * tileOffset.x
+        let gridHeight = CGFloat(gridSize - 1) * tileOffset.y
+        let startX = centerX - (gridWidth / 2)
+        let startY = centerY - (gridHeight / 2) + tileSize.height - 100
+        
+        for tile in tileData.tiles {
+            createTileNode(for: tile, startX: startX, startY: startY)
             
-            guard let tileData = tileData else { return }
-            
-            let gridWidth = CGFloat(gridSize - 1) * tileOffset.x
-            let gridHeight = CGFloat(gridSize - 1) * tileOffset.y
-            let startX = centerX - (gridWidth / 2)
-            let startY = centerY - (gridHeight / 2) + tileSize.height - 100
-            
-            for tile in tileData.tiles {
-                createTileNode(for: tile, startX: startX, startY: startY)
-                
-                if tile.isMatched && !lastMatchedTiles.contains(tile.id) {
-                    if let node = tileNodes[tile.id] {
-                        playMatchAnimation(for: node)
-                        lastMatchedTiles.insert(tile.id)
-                    }
+            if tile.isMatched && !lastMatchedTiles.contains(tile.id) {
+                if let node = tileNodes[tile.id] {
+                    playMatchAnimation(for: node)
+                    lastMatchedTiles.insert(tile.id)
                 }
             }
         }
+    }
     
     private func createTileNode(for tile: Tile, startX: CGFloat, startY: CGFloat) {
         let texture = SKTexture(imageNamed: tile.isMatched ? "backImage" : tile.frontImage)
@@ -95,27 +96,58 @@ class GameScene: SKScene {
         node.run(sequence)
     }
     
+    private func checkGameCompletion() {
+        guard let tileData = tileData else { return }
+        
+        if tileData.tiles.allSatisfy({ $0.isMatched }) {
+            showCompletionMessage()
+        }
+    }
+    
+    private func showCompletionMessage() {
+        let message = SKLabelNode(text: "Good Job!")
+        message.fontName = "AvenirNext-Bold"
+        message.fontSize = 100
+        message.fontColor = UIColor(named: "TextColor")
+        message.position = CGPoint(x: size.width / 2, y: size.height / 2)
+        message.alpha = 0
+        message.zPosition = 200
+        
+        addChild(message)
+        
+        let fadeIn = SKAction.fadeIn(withDuration: 0.5)
+        let scaleUp = SKAction.scale(to: 1.2, duration: 0.5)
+        let wait = SKAction.wait(forDuration: 2.0)
+        let fadeOut = SKAction.fadeOut(withDuration: 1.0)
+        let remove = SKAction.removeFromParent()
+        
+        let sequence = SKAction.sequence([fadeIn, scaleUp, wait, fadeOut, remove])
+        message.run(sequence)
+    }
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
         let location = touch.location(in: self)
         
         guard let tileData = tileData else { return }
         
-                
-                if resetButton.contains(location) {
-                    tileData.generateTiles()
-                    updateTileVisuals()
-                    return
-                }
-                
-                
-                for tile in tileData.tiles.reversed() {
-                    if let node = tileNodes[tile.id], node.contains(location) {
-                        tileData.selectTile(tile)
-                        updateTileVisuals()
-                        break
-                    }
-                }
+        
+        if resetButton.contains(location) {
+            tileData.generateTiles()
+            updateTileVisuals()
+            return
+        }
+        
+        
+        for tile in tileData.tiles.reversed() {
+            if let node = tileNodes[tile.id], node.contains(location) {
+                tileData.selectTile(tile)
+                // Sound
+                //AudioManager.shared.playSoundEffect(tile.soundFileName, in: self)
+                updateTileVisuals()
+                break
+            }
+        }
         
     }
     
@@ -123,5 +155,7 @@ class GameScene: SKScene {
         let centerX = size.width / 2
         let centerY = size.height / 2
         setupGame(centerX: centerX, centerY: centerY)
+        
+        checkGameCompletion()
     }
 }

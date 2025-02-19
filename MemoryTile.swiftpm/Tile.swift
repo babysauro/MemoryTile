@@ -8,6 +8,7 @@ struct Tile: Identifiable, Equatable {
     var isSelected: Bool
     var isMatched: Bool
     var position: Position
+    //let soundFileName: String
     
     struct Position: Equatable {
         var x: Int

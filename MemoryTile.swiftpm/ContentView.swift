@@ -35,17 +35,7 @@ struct ContentView: View {
         .onAppear {
             tileData.generateTiles()
         }
-        .alert("Game Complete!", isPresented: $showGameOver) {
-            Button("Play Again") {
-                tileData.generateTiles()
-            }
-        } message: {
-            Text("Final Score: \(tileData.score)")
-        }
-        .onChange(of: tileData.tiles) { _ in
-            if tileData.isGameComplete() {
-                showGameOver = true
-            }
-        }
+        
     }
 }
+
