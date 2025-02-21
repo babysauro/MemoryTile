@@ -1,4 +1,5 @@
 import SpriteKit
+import AVFoundation
 
 class GameScene: SKScene {
     
@@ -11,32 +12,55 @@ class GameScene: SKScene {
     private let tileOffset = CGPoint(x: 110, y: 130)
     private let gridSize = 6
     
+    // AudioPlayer
+    private var backgroundMusicPlayer: AVAudioPlayer?
+    
     override func didMove(to view: SKView) {
         backgroundColor = UIColor(named: "AccentColor") ?? .black
-        // Sound
-        //AudioManager.shared.playBackgroundMusic(filename: "backgroundMusic.mp3")
-        setupResetButton()
         
-        let centerX = size.width / 2
-        let centerY = size.height / 2
-        setupGame(centerX: centerX, centerY: centerY)
+        setupResetButton()
+        setupGame()
+        
+        // Play BG music
+        playBackgroundMusic()
+        
     }
+    
+    // Background Music
+    func playBackgroundMusic() {
+        if let url = Bundle.main.url(forResource: "2-Billie-LUNCH", withExtension: "mp3") {
+            do {
+                backgroundMusicPlayer = try AVAudioPlayer(contentsOf: url)
+                backgroundMusicPlayer?.numberOfLoops = -1  // Loop
+                backgroundMusicPlayer?.play()
+            } catch {
+                print("Errore nel caricamento della musica: \(error.localizedDescription)")
+            }
+        } else {
+            print("File audio not found!")
+        }
+    }
+    
     
     private func setupResetButton() {
-        resetButton = SKSpriteNode(imageNamed: "restart")
-        resetButton.size = CGSize(width: 60, height: 60)
-        resetButton.position = CGPoint(x: size.width / 2, y: 100)
-        resetButton.zPosition = 100
-        addChild(resetButton)
+        if resetButton == nil {
+            resetButton = SKSpriteNode(imageNamed: "restart")
+            resetButton.size = CGSize(width: 60, height: 60)
+            resetButton.position = CGPoint(x: size.width / 2, y: 100)
+            resetButton.zPosition = 100
+            addChild(resetButton)
+        }
     }
     
-    private func setupGame(centerX: CGFloat, centerY: CGFloat) {
-        removeAllChildren()
+    private func setupGame() {
+        // Rimuove solo i nodi delle tessere, senza eliminare altri elementi come il pulsante reset
+        tileNodes.values.forEach { $0.removeFromParent() }
         tileNodes.removeAll()
-        setupResetButton()
         
         guard let tileData = tileData else { return }
         
+        let centerX = size.width / 2
+        let centerY = size.height / 2
         let gridWidth = CGFloat(gridSize - 1) * tileOffset.x
         let gridHeight = CGFloat(gridSize - 1) * tileOffset.y
         let startX = centerX - (gridWidth / 2)
@@ -58,8 +82,11 @@ class GameScene: SKScene {
         let texture = SKTexture(imageNamed: tile.isMatched ? "backImage" : tile.frontImage)
         
         if let existingNode = tileNodes[tile.id] {
-            existingNode.texture = texture  // Update exsisting texture
+            
+            existingNode.texture = texture
             existingNode.alpha = tile.isMatched ? 0.5 : 1.0
+            existingNode.color = tile.isSelected ? .yellow : .clear
+            existingNode.colorBlendFactor = tile.isSelected ? 0.3 : 0.0
             return
         }
         
@@ -94,6 +121,7 @@ class GameScene: SKScene {
         let sequence = SKAction.sequence([scaleUp, scaleDown, group])
         
         node.run(sequence)
+        
     }
     
     private func checkGameCompletion() {
@@ -108,7 +136,7 @@ class GameScene: SKScene {
         let message = SKLabelNode(text: "Good Job!")
         message.fontName = "AvenirNext-Bold"
         message.fontSize = 100
-        message.fontColor = UIColor(named: "TextColor")
+        message.fontColor = UIColor(named: "TextColor") ?? .white
         message.position = CGPoint(x: size.width / 2, y: size.height / 2)
         message.alpha = 0
         message.zPosition = 200
@@ -131,31 +159,27 @@ class GameScene: SKScene {
         
         guard let tileData = tileData else { return }
         
-        
         if resetButton.contains(location) {
             tileData.generateTiles()
             updateTileVisuals()
             return
         }
         
-        
         for tile in tileData.tiles.reversed() {
             if let node = tileNodes[tile.id], node.contains(location) {
                 tileData.selectTile(tile)
-                // Sound
-                //AudioManager.shared.playSoundEffect(tile.soundFileName, in: self)
+                
+                // Se hai una funzione per gli effetti sonori, riattivala
+                // AudioManager.shared.playSoundEffect(tile.soundFileName, in: self)
+                
                 updateTileVisuals()
                 break
             }
         }
-        
     }
     
     private func updateTileVisuals() {
-        let centerX = size.width / 2
-        let centerY = size.height / 2
-        setupGame(centerX: centerX, centerY: centerY)
-        
+        setupGame()
         checkGameCompletion()
     }
 }
