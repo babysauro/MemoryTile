@@ -5,6 +5,7 @@ class GameScene: SKScene {
     weak var tileData: TileData?
     private var tileNodes: [UUID: SKSpriteNode] = [:]
     private var lastMatchedTiles: Set<UUID> = []
+    private var matchedTilesWithSound: Set<UUID> = []
     private var resetButton: SKSpriteNode!
     
     private let tileSize = CGSize(width: 100, height: 120)
@@ -16,21 +17,20 @@ class GameScene: SKScene {
     override func didMove(to view: SKView) {
         backgroundColor = UIColor(named: "AccentColor") ?? .black
         
-            print("Contenuto della cartella Resources:")
-            if let resourcePath = Bundle.main.resourcePath {
-                do {
-                    let contents = try FileManager.default.contentsOfDirectory(atPath: resourcePath)
-                    contents.forEach { print($0) }
-                } catch {
-                    print("Errore nel leggere la directory: \(error)")
-                }
+        print("Contenuto della cartella Resources:")
+        if let resourcePath = Bundle.main.resourcePath {
+            do {
+                let contents = try FileManager.default.contentsOfDirectory(atPath: resourcePath)
+                contents.forEach { print($0) }
+            } catch {
+                print("Errore nel leggere la directory: \(error)")
             }
+        }
         
         setupResetButton()
         setupGame()
         
         //AudioManager.shared.playBackgroundMusic(named: "BackgroundSong")
-        
     }
     
     
@@ -64,6 +64,14 @@ class GameScene: SKScene {
                 if let node = tileNodes[tile.id] {
                     playMatchAnimation(for: node)
                     lastMatchedTiles.insert(tile.id)
+                    
+                    let matchedPair = tileData.tiles.filter { $0.frontImage == tile.frontImage && $0.isMatched }
+                    if matchedPair.count == 2 && !matchedTilesWithSound.contains(tile.id) {
+                        let soundName = tile.frontImage.replacingOccurrences(of: tile.frontImage, with: tile.soundFileName)
+                        AudioManager.shared.playSoundEffect(named: soundName)
+                        
+                        matchedPair.forEach { matchedTilesWithSound.insert($0.id) }
+                    }
                 }
             }
         }
@@ -73,7 +81,6 @@ class GameScene: SKScene {
         let texture = SKTexture(imageNamed: tile.isMatched ? "backImage" : tile.frontImage)
         
         if let existingNode = tileNodes[tile.id] {
-            
             existingNode.texture = texture
             existingNode.alpha = tile.isMatched ? 0.5 : 1.0
             existingNode.color = tile.isSelected ? .yellow : .clear
@@ -112,7 +119,6 @@ class GameScene: SKScene {
         let sequence = SKAction.sequence([scaleUp, scaleDown, group])
         
         node.run(sequence)
-        
     }
     
     private func checkGameCompletion() {
@@ -152,6 +158,8 @@ class GameScene: SKScene {
         
         if resetButton.contains(location) {
             tileData.generateTiles()
+            lastMatchedTiles.removeAll()
+            matchedTilesWithSound.removeAll()
             updateTileVisuals()
             return
         }
@@ -159,9 +167,6 @@ class GameScene: SKScene {
         for tile in tileData.tiles.reversed() {
             if let node = tileNodes[tile.id], node.contains(location) {
                 tileData.selectTile(tile)
-                
-                AudioManager.shared.playSoundEffect(named: tile.soundFileName)
-                
                 updateTileVisuals()
                 break
             }
@@ -173,3 +178,4 @@ class GameScene: SKScene {
         checkGameCompletion()
     }
 }
+
