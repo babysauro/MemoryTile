@@ -39,7 +39,7 @@ class AudioManager {
         
         do {
             soundEffectPlayer = try AVAudioPlayer(contentsOf: url)
-            soundEffectPlayer?.volume = 1.0
+            soundEffectPlayer?.volume = 0.5
             soundEffectPlayer?.play()
         } catch {
             print("Errore nel caricamento dell'effetto sonoro: \(error.localizedDescription)")

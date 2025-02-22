@@ -11,7 +11,14 @@ class TileData: ObservableObject {
         "note6", "note7", "violin", "piano", "guitar", "drum", "flaute"
     ]
     
-    // Layout configuration
+    private let tileSounds: [String: String] = [
+        "violin": "violin",
+        "piano": "piano",
+        "guitar": "guitar",
+        "drum": "drum",
+        "flaute": "flute"
+    ]
+    
     private let layerCount = 2
     private let rowCount = 6
     private let columnCount = 6
@@ -20,7 +27,6 @@ class TileData: ObservableObject {
         tiles = []
         var tempTiles: [Tile] = []
         
-        // Create pairs of tiles
         for image in tileImages {
             for _ in 0...1 {
                 let tile = Tile(
@@ -29,8 +35,8 @@ class TileData: ObservableObject {
                     isVisible: true,
                     isSelected: false,
                     isMatched: false,
-                    position: Tile.Position(x: 0, y: 0, z: 0)
-                    //soundFileName: "Brano_0"
+                    position: Tile.Position(x: 0, y: 0, z: 0),
+                    soundFileName: tileSounds[image] ?? "sound"
                 )
                 tempTiles.append(tile)
             }
@@ -47,7 +53,6 @@ class TileData: ObservableObject {
         for z in 0..<layerCount {
             for y in 0..<rowCount {
                 for x in 0..<columnCount {
-                    // Skip some positions to create interesting patterns
                     if shouldPlaceTile(at: x, y: y, z: z) && tileIndex < tiles.count {
                         tiles[tileIndex].position = Tile.Position(x: x, y: y, z: z)
                         tileIndex += 1
@@ -58,7 +63,6 @@ class TileData: ObservableObject {
     }
     
     private func shouldPlaceTile(at x: Int, y: Int, z: Int) -> Bool {
-        // Create interesting patterns by skipping certain positions
         if z == 0 {
             return true
         } else if z == 1 {
@@ -74,11 +78,9 @@ class TileData: ObservableObject {
         
         if let index = tiles.firstIndex(of: tile) {
             if selectedTiles.contains(tile) {
-                // Deselect tile
                 selectedTiles.removeAll { $0 == tile }
                 tiles[index].isSelected = false
             } else {
-                // Select tile
                 if selectedTiles.count < 2 {
                     selectedTiles.append(tile)
                     tiles[index].isSelected = true
@@ -97,9 +99,7 @@ class TileData: ObservableObject {
         let tile1 = selectedTiles[0]
         let tile2 = selectedTiles[1]
         
-        // Match only based on frontImage, no position check
         if tile1.frontImage == tile2.frontImage {
-            // Match found
             for tile in selectedTiles {
                 if let index = tiles.firstIndex(of: tile) {
                     tiles[index].isMatched = true
@@ -108,7 +108,6 @@ class TileData: ObservableObject {
             }
             score += 10
         } else {
-            // No match
             for tile in selectedTiles {
                 if let index = tiles.firstIndex(of: tile) {
                     tiles[index].isSelected = false

@@ -8,7 +8,7 @@ struct Tile: Identifiable, Equatable {
     var isSelected: Bool
     var isMatched: Bool
     var position: Position
-    //let soundFileName: String
+    let soundFileName: String
     
     struct Position: Equatable {
         var x: Int
@@ -17,7 +17,6 @@ struct Tile: Identifiable, Equatable {
         
         
         func isAccessible(in tiles: [Tile]) -> Bool {
-
             return true
         }
     }

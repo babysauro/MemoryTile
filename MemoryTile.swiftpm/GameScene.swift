@@ -16,7 +16,6 @@ class GameScene: SKScene {
     override func didMove(to view: SKView) {
         backgroundColor = UIColor(named: "AccentColor") ?? .black
         
-        // Debug per risorse
             print("Contenuto della cartella Resources:")
             if let resourcePath = Bundle.main.resourcePath {
                 do {
@@ -30,7 +29,7 @@ class GameScene: SKScene {
         setupResetButton()
         setupGame()
         
-        AudioManager.shared.playBackgroundMusic(named: "BackgroundSong")
+        //AudioManager.shared.playBackgroundMusic(named: "BackgroundSong")
         
     }
     
@@ -46,7 +45,6 @@ class GameScene: SKScene {
     }
     
     private func setupGame() {
-        // Rimuove solo i nodi delle tessere, senza eliminare altri elementi come il pulsante reset
         tileNodes.values.forEach { $0.removeFromParent() }
         tileNodes.removeAll()
         
@@ -162,8 +160,7 @@ class GameScene: SKScene {
             if let node = tileNodes[tile.id], node.contains(location) {
                 tileData.selectTile(tile)
                 
-                // Se hai una funzione per gli effetti sonori, riattivala
-                // AudioManager.shared.playSoundEffect(tile.soundFileName, in: self)
+                AudioManager.shared.playSoundEffect(named: tile.soundFileName)
                 
                 updateTileVisuals()
                 break
