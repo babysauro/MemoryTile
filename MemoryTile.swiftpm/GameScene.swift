@@ -1,5 +1,4 @@
 import SpriteKit
-import AVFoundation
 
 class GameScene: SKScene {
     
@@ -12,8 +11,7 @@ class GameScene: SKScene {
     private let tileOffset = CGPoint(x: 110, y: 130)
     private let gridSize = 6
     
-    // AudioPlayer
-    private var backgroundMusicPlayer: AVAudioPlayer?
+    
     
     override func didMove(to view: SKView) {
         backgroundColor = UIColor(named: "AccentColor") ?? .black
@@ -21,24 +19,8 @@ class GameScene: SKScene {
         setupResetButton()
         setupGame()
         
-        // Play BG music
-        playBackgroundMusic()
+        AudioManager.shared.playBackgroundMusic(named: "2-Billie-LUNCH")
         
-    }
-    
-    // Background Music
-    func playBackgroundMusic() {
-        if let url = Bundle.main.url(forResource: "2-Billie-LUNCH", withExtension: "mp3") {
-            do {
-                backgroundMusicPlayer = try AVAudioPlayer(contentsOf: url)
-                backgroundMusicPlayer?.numberOfLoops = -1  // Loop
-                backgroundMusicPlayer?.play()
-            } catch {
-                print("Errore nel caricamento della musica: \(error.localizedDescription)")
-            }
-        } else {
-            print("File audio not found!")
-        }
     }
     
     
