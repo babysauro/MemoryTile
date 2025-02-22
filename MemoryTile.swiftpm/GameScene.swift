@@ -16,10 +16,21 @@ class GameScene: SKScene {
     override func didMove(to view: SKView) {
         backgroundColor = UIColor(named: "AccentColor") ?? .black
         
+        // Debug per risorse
+            print("Contenuto della cartella Resources:")
+            if let resourcePath = Bundle.main.resourcePath {
+                do {
+                    let contents = try FileManager.default.contentsOfDirectory(atPath: resourcePath)
+                    contents.forEach { print($0) }
+                } catch {
+                    print("Errore nel leggere la directory: \(error)")
+                }
+            }
+        
         setupResetButton()
         setupGame()
         
-        AudioManager.shared.playBackgroundMusic(named: "2-Billie-LUNCH")
+        AudioManager.shared.playBackgroundMusic(named: "BackgroundSong")
         
     }
     
