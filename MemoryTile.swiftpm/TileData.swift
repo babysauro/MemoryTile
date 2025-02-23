@@ -16,7 +16,14 @@ class TileData: ObservableObject {
         "piano": "piano",
         "guitar": "guitar",
         "drum": "drum",
-        "flaute": "flute"
+        "flaute": "flute",
+        "note1": "note1",
+        "note2": "note2",
+        "note3": "note3",
+        "note4": "bass",
+        "note5": "diesis",
+        "note6": "bemolle",
+        "note7": "mute"
     ]
     
     private let layerCount = 2
