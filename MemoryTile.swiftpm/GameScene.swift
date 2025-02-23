@@ -33,13 +33,14 @@ class GameScene: SKScene {
         //AudioManager.shared.playBackgroundMusic(named: "BackgroundSong")
     }
     
-    
     private func setupResetButton() {
         if resetButton == nil {
             resetButton = SKSpriteNode(imageNamed: "restart")
             resetButton.size = CGSize(width: 60, height: 60)
             resetButton.position = CGPoint(x: size.width / 2, y: 100)
             resetButton.zPosition = 100
+            resetButton.color = UIColor(red: 230/255, green: 213/255, blue: 172/255, alpha: 1)
+            resetButton.colorBlendFactor = 1.0
             addChild(resetButton)
         }
     }
