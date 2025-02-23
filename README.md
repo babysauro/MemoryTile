@@ -17,9 +17,6 @@ https://github.com/user-attachments/assets/a3b070ac-3f16-472b-9b12-6be0b3ab7a97
 # Technologies Used
 - <img alt="HTML" width="30px" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/xcode/xcode-original.svg" /> Xcode: Main development environment for the game
 - <img alt="HTML" width="30px" src="https://img.icons8.com/?size=100&id=36327&format=png&color=000000"> Ableton: Used for creating and editing game sound effects and musical elements
-- <img alt="HTML" width="30px" src="https://img.icons8.com/?size=100&id=tDtvWzs979he&format=png&color=000000"> AI Tools: Utilized for tile design inspiration and artistic elements
-- iOS SDK: Core framework for game development
-- Original sounds
 
 # Project's Goals 🎯
 - Provide an entertaining and engaging gaming experience
